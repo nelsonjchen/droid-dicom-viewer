@@ -3,6 +3,7 @@ DISCLAIMER
 Copyright © 2011 Pierre Malarme
 
 Authors: Pierre Malarme <pmalarme at ulb.ac.be>
+						<pmalarme@gmail.com>
 
 Institution: Laboratory of Image Synthesis and Analysis (LISA)
              Faculty of Applied Science
@@ -27,13 +28,20 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
 Public License for more details (cf. GNU General Public License version 3).
 
 Droid Dicom Viewer icon license:
-The Droid Dicom Viewer icon by Pierre Malarme (pmalarme at ulb.ac.be)
+The Droid Dicom Viewer icon by Pierre Malarme
 is licensed under a Creative Commons Attribution-ShareAlike 3.0 License
 (http://creativecommons.org/licenses/by-sa/3.0/).
 The Droid Dicom Viewer icon is a modification based on work created and shared
 by Google (http://code.google.com/policies.html) and use according to terms
 describe in the Creative Commons 3.0 Attribution License
 (http://creativecommons.org/licenses/by/3.0/).
+
+Droid Dicom Toolbar icons:
+Droid Dicom Toolbar icons by Pierre Malarme are licensed under a Creative Commons
+Attribution-ShareAlike 3.0 License (http://creativecommons.org/licenses/by-sa/3.0/).
+These icons are modifications based on Androidª Templates Pack
+(http://developer.android.com/guide/practices/ui_guidelines/icon_design.html)
+and use according to terms describe in the Apache 2.0 License (See NOTICE).
 
 Droid Dicom Viewer images license:
 Other Droid Dicom Viewer images by Pierre Malarme are licensed under a Creative Commons
