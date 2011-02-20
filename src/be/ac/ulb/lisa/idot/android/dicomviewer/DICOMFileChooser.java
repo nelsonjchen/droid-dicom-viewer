@@ -603,6 +603,7 @@ public class DICOMFileChooser extends ListActivity {
 		            	} catch (IllegalArgumentException ex) {
 		            		// Do nothing
 		            	}
+		            	fill();
 		            	break;
 		            	
 		            case ThreadState.CATCHABLE_ERROR_OCCURRED:

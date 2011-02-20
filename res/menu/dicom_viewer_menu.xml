@@ -27,29 +27,9 @@
  
   Released date: 17-02-2011
  
-  Version: 1.0
+  Version: 1.1
  -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <item android:title="Show/Hide">
-    
-    	<menu>
-    	
-    		<item android:id="@+id/showHide_grayscaleWindow"
-    			android:title="Grayscale Window"
-    			android:checkable="true" />
-    			
-    		<item android:id="@+id/showHide_serieSeekBar"
-    			android:title="File navigation"
-    			android:checkable="true" />
-    			
-    		<item android:id="@+id/showHide_toolbar"
-    			android:title="Toolbar"
-    			android:checkable="true" />
-    	
-    	</menu>
-    	
-    </item>
     
     <item android:title="LUT/CLUT">
     
@@ -113,6 +93,26 @@
 		</menu>
 		
 	</item>
+	
+	<item android:title="Display settings">
+    
+    	<menu>
+    	
+    		<item android:id="@+id/showHide_grayscaleWindow"
+    			android:checkable="true" android:title="Show Grayscale Window"/>
+    			
+    		<item android:id="@+id/showHide_serieSeekBar"
+    			android:checkable="true" android:title="Show Series Navigation"/>
+    			
+    		<item android:id="@+id/showHide_toolbar"
+    			android:checkable="true" android:title="Show Toolbar"/>
+    			
+    		<item android:id="@+id/lock_toolbar"
+    			android:checkable="true" android:title="Lock Toolbar"/>
+    	
+    	</menu>
+    	
+    </item>
     
     <item android:id="@+id/ddv_CacheAllImage"
     	android:title="Cache all images" />

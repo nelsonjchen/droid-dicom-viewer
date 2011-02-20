@@ -227,6 +227,8 @@ public final class DICOMImageCacher extends Thread {
 				
 			}
 			
+			dicomImage = null;
+			
 			return true;
 			
 			

@@ -27,7 +27,7 @@
  
   Released date: 17-02-2011
  
-  Version: 1.0
+  Version: 1.1
  -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
              android:id="@+id/layout_root"
@@ -66,7 +66,7 @@
 	    	<TextView android:id="@+id/text"
 	              android:layout_width="wrap_content"
 	              android:layout_height="wrap_content"
-	              android:text="Droid Dicom Viewer is a prototype of DICOM Viewer developped for the Android™ platform.\n\nAuthor: Pierre Malarme (pmalarme@ulb.ac.be)\n\nDepartment: Laboratory of Image Synthesys and Analysis\n\nInstitution: Université Libre de Bruxelles\n\nWebsite: http://code.google.com/p/droid-dicom-viewer/\n\nThe Droid Dicom Viewer is a free and opensource software licensed under the GNU General Public license version 3.\nSee the Droid Dicom License for more details: http://code.google.com/p/droid-dicom-viewer/wiki/License.\nAndroid is a trademark of Google Inc. Use of this trademark is subject to Google Permissions (http://www.google.com/permissions/index.html).\n\n2011 © Pierre Malarme"
+	              android:text="Droid Dicom Viewer is a prototype of DICOM Viewer developped for the Android™ platform.\n\nAuthor: Pierre Malarme (pmalarme@gmail.com)\n\nDepartment: Laboratory of Image Synthesys and Analysis\n\nInstitution: Université Libre de Bruxelles\n\nWebsite: http://code.google.com/p/droid-dicom-viewer/\n\nThe Droid Dicom Viewer is a free and opensource software licensed under the GNU General Public license version 3.\nSee the Droid Dicom License for more details: http://code.google.com/p/droid-dicom-viewer/wiki/License.\nAndroid is a trademark of Google Inc. Use of this trademark is subject to Google Permissions (http://www.google.com/permissions/index.html).\n\n2011 © Pierre Malarme"
 	              android:textColor="#FFF"/>
 	    	
 	    </LinearLayout>

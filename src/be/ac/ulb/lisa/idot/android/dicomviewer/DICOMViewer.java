@@ -27,7 +27,7 @@
  *
  * Released date: 17-02-2011
  *
- * Version: 1.0
+ * Version: 1.1
  *
  */
 
@@ -77,7 +77,7 @@ import be.ac.ulb.lisa.idot.image.file.LISAImageGray16BitWriter;
  * DicomViewer activity that shows an image.
  * 
  * @author Pierre Malarme
- * @version 1.0
+ * @version 1.1
  *
  */
 public class DICOMViewer extends Activity implements SeekBar.OnSeekBarChangeListener {
@@ -109,10 +109,21 @@ public class DICOMViewer extends Activity implements SeekBar.OnSeekBarChangeList
 	// ---------------------------------------------------------------
 	
 	// UI VARIABLES
+	
 	/**
 	 * The image view.
 	 */
 	private DICOMImageView mImageView;
+	
+	/**
+	 * The tool bar linear layout.
+	 */
+	private LinearLayout mToolBar;
+	
+	/**
+	 * Set if the tool bar is locked or not.
+	 */
+	private boolean mLockToolBar = false;
 	
 	/**
 	 * The button to set the mToolMode to
@@ -125,6 +136,31 @@ public class DICOMViewer extends Activity implements SeekBar.OnSeekBarChangeList
 	 * ToolMode.GRAYSCALE.
 	 */
 	private Button mGrayscaleToolButton;
+	
+	/**
+	 * Normal CLUT button.
+	 */
+	private Button mCLUTNormalButton;
+	
+	/**
+	 * Inverse CLUT button. 
+	 */
+	private Button mCLUTInverseButton;
+	
+	/**
+	 * Rainbow CLUT button.
+	 */
+	private Button mCLUTRainbowButton;
+	
+	/**
+	 * Lock/unlock tool bar button.
+	 */
+	private Button mLockUnlockToolBar;
+	
+	/**
+	 * Current tool button. 
+	 */
+	private Button mCurrentToolButton;
 	
 	/**
 	 * The grayscale window (ImageView).
@@ -168,9 +204,9 @@ public class DICOMViewer extends Activity implements SeekBar.OnSeekBarChangeList
 	private TextView mColumnOrientation;
 	
 	// MENU VARIABLE
-	// Safer to keep in memory as proposed
-	// in Android documentation
-	@SuppressWarnings("unused")
+	/**
+	 * DICOM Viewer menu.
+	 */
 	private Menu mMenu;
 	
 	// DICOM FILE LOADER THREAD
@@ -244,8 +280,14 @@ public class DICOMViewer extends Activity implements SeekBar.OnSeekBarChangeList
 		
 		// Declare the UI variables
 		mImageView = (DICOMImageView) findViewById(R.id.imageView);
+		mToolBar = (LinearLayout) findViewById(R.id.toolBar);
 		mDimensionToolButton = (Button) findViewById(R.id.dimensionMode);
 		mGrayscaleToolButton = (Button) findViewById(R.id.grayscaleMode);
+		mCLUTNormalButton = (Button) findViewById(R.id.clutNormal);
+		mCLUTInverseButton = (Button) findViewById(R.id.clutInverse);
+		mCLUTRainbowButton = (Button) findViewById(R.id.clutRainbow); 
+		mLockUnlockToolBar = (Button) findViewById(R.id.lockUnlockToolbar);
+		mCurrentToolButton = (Button) findViewById(R.id.currentToolButton);
 		mGrayscaleWindow = (GrayscaleWindowView) findViewById(R.id.grayscaleImageView);
 		mPreviousButton = (Button) findViewById(R.id.previousImageButton);
 		mNextButton = (Button) findViewById(R.id.nextImageButton);
@@ -370,11 +412,25 @@ public class DICOMViewer extends Activity implements SeekBar.OnSeekBarChangeList
 		// Set the seek bar change index listener
 		mIndexSeekBar.setOnSeekBarChangeListener(this);
 		
+		// Set onLongClickListener
+		mIndexSeekBar.setOnLongClickListener(onLongClickListener);
+		mNavigationBar.setOnLongClickListener(onLongClickListener);
+		mPreviousButton.setOnLongClickListener(onLongClickListener);
+		mNextButton.setOnLongClickListener(onLongClickListener);
+		mToolBar.setOnLongClickListener(onLongClickListener);
+		mGrayscaleWindow.setOnLongClickListener(onLongClickListener);
+		
 		// Create the DICOMViewerData and set
 		// the tool mode to dimension
 		mDICOMViewerData = new DICOMViewerData();
 		mDICOMViewerData.setToolMode(ToolMode.DIMENSION);
 		mDimensionToolButton.setBackgroundResource(R.drawable.ruler_select);
+		mCurrentToolButton.setBackgroundResource(R.drawable.ruler_select);
+		mCLUTNormalButton.setVisibility(View.GONE);
+		mCLUTNormalButton.setBackgroundResource(R.drawable.clut_normal_select);
+		mCLUTInverseButton.setVisibility(View.GONE);
+		mCLUTRainbowButton.setVisibility(View.GONE);
+		mToolBar.setVisibility(View.GONE);
 		
 		// Set the tool mode too the DICOMImageView and
 		// the GrayscaleWindow
@@ -554,21 +610,39 @@ public class DICOMViewer extends Activity implements SeekBar.OnSeekBarChangeList
         // Set the show/hide tool bar
         MenuItem toolBar = menu.findItem(R.id.showHide_toolbar);
         
-        if (mDimensionToolButton.getVisibility() == View.INVISIBLE) {
-        	
-        	if (mGrayscaleToolButton.getVisibility() == View.VISIBLE)
-        		mGrayscaleToolButton.setVisibility(View.INVISIBLE);
-        	
+        if (mToolBar.getVisibility() == View.GONE
+        		&& mCurrentToolButton.getVisibility() == View.INVISIBLE)
         	toolBar.setChecked(false);
-        	
-        } else {
-        	
-        	if (mGrayscaleToolButton.getVisibility() == View.INVISIBLE)
-        		mGrayscaleToolButton.setVisibility(View.VISIBLE);
-        	
+        else
         	toolBar.setChecked(true);
+        
+        // Set the CLUT mode
+        switch (mDICOMViewerData.getCLUTMode()) {
+        
+        case CLUTMode.NORMAL:
+        	MenuItem clutMode = menu.findItem(R.id.show_normalLUT);
+        	clutMode.setChecked(true);
+        	break;
         	
+        case CLUTMode.INVERSE:
+        	clutMode = menu.findItem(R.id.show_inverseLUT);
+        	clutMode.setChecked(true);
+        	break;
+        	
+        case CLUTMode.RAINBOW:
+        	clutMode = menu.findItem(R.id.show_rainbowCLUT);
+        	clutMode.setChecked(true);
+        	break;
+        
         }
+        
+        // Set the lock/unlock tool bar menu time
+        MenuItem lockUnlockToolBar = menu.findItem(R.id.lock_toolbar);
+        
+        if (mLockToolBar)
+        	lockUnlockToolBar.setChecked(true);
+        else
+        	lockUnlockToolBar.setChecked(false);
         
         return true;
     }
@@ -599,37 +673,90 @@ public class DICOMViewer extends Activity implements SeekBar.OnSeekBarChangeList
             	return true;
             	
             case R.id.showHide_toolbar:
-            	if(mGrayscaleToolButton.getVisibility() == View.INVISIBLE) {
-            		item.setChecked(true);
-            		mDimensionToolButton.setVisibility(View.VISIBLE);
-            		mGrayscaleToolButton.setVisibility(View.VISIBLE);
+            	if(mToolBar.getVisibility() == View.VISIBLE
+            			|| mCurrentToolButton.getVisibility() == View.VISIBLE) {
+            		
+            		item.setChecked(false);
+            		
+            		hideToolBar(null);
+            		mCurrentToolButton.setVisibility(View.INVISIBLE);
+            		
             	} else {
             		item.setChecked(false);
-            		mDimensionToolButton.setVisibility(View.INVISIBLE);
-            		mGrayscaleToolButton.setVisibility(View.INVISIBLE);
+            		
+            		if (mLockToolBar)
+            			showToolBar(null);
+            		else
+            			mCurrentToolButton.setVisibility(View.VISIBLE);
+            		
+            	}
+            	return true;
+            	
+            case R.id.lock_toolbar:
+            	if (mLockToolBar) {
+            		item.setChecked(false);
+            		mLockToolBar = false;
+            		mLockUnlockToolBar.setBackgroundResource(R.drawable.unlock);
+            		hideToolBar(null);
+            	} else {
+            		item.setChecked(true);
+                	mLockToolBar = true;
+                	mLockUnlockToolBar.setBackgroundResource(R.drawable.lock);
+                	showToolBar(null);
             	}
             	return true;
             	
             // LUT/CLUT
             case R.id.show_normalLUT:
             	item.setChecked(true);
+            	
+            	mCLUTNormalButton.setBackgroundResource(
+    					R.drawable.clut_normal_select);
+    			mCLUTInverseButton.setBackgroundResource(
+    					R.drawable.clut_inverse);
+    			mCLUTRainbowButton.setBackgroundResource(
+    					R.drawable.clut_rainbow);
+    			
             	mDICOMViewerData.setCLUTMode(CLUTMode.NORMAL);
+            	
             	mGrayscaleWindow.updateCLUTMode();
+            	
             	mImageView.draw();
+            	
             	return true;
             	
             case R.id.show_inverseLUT:
             	item.setChecked(true);
-            	mDICOMViewerData.setCLUTMode(CLUTMode.INVERSE);
+            	
+            	mCLUTNormalButton.setBackgroundResource(
+    					R.drawable.clut_normal);
+    			mCLUTInverseButton.setBackgroundResource(
+    					R.drawable.clut_inverse_select);
+    			mCLUTRainbowButton.setBackgroundResource(
+    					R.drawable.clut_rainbow);
+    			
             	mGrayscaleWindow.updateCLUTMode();
+            	
             	mImageView.draw();
+            	
             	return true;
             	
             case R.id.show_rainbowCLUT:
             	item.setChecked(true);
+            	
+            	mCLUTNormalButton.setBackgroundResource(
+    					R.drawable.clut_normal);
+    			mCLUTInverseButton.setBackgroundResource(
+    					R.drawable.clut_inverse);
+    			mCLUTRainbowButton.setBackgroundResource(
+    					R.drawable.clut_rainbow_select);
+            	
             	mDICOMViewerData.setCLUTMode(CLUTMode.RAINBOW);
+            	
             	mGrayscaleWindow.updateCLUTMode();
+            	
             	mImageView.draw();
+            	
             	return true;
             	
             // GRAYSCALE WINDOW
@@ -793,9 +920,18 @@ public class DICOMViewer extends Activity implements SeekBar.OnSeekBarChangeList
 			mDICOMViewerData.setToolMode(ToolMode.DIMENSION);
 
 			mDimensionToolButton.setBackgroundResource(R.drawable.ruler_select);
+			mCurrentToolButton.setBackgroundResource(R.drawable.ruler_select);
 			mGrayscaleToolButton.setBackgroundResource(R.drawable.grayscale);
+			
+			mCLUTNormalButton.setVisibility(View.GONE);
+			mCLUTInverseButton.setVisibility(View.GONE);
+			mCLUTRainbowButton.setVisibility(View.GONE);
+			
 
 		}
+		
+		if (!mLockToolBar)
+			hideToolBar(view);
 
 	}
 
@@ -810,12 +946,18 @@ public class DICOMViewer extends Activity implements SeekBar.OnSeekBarChangeList
 
 			mDICOMViewerData.setToolMode(ToolMode.GRAYSCALE);
 
-			mGrayscaleToolButton
-					.setBackgroundResource(R.drawable.grayscale_select);
-
+			mGrayscaleToolButton.setBackgroundResource(R.drawable.grayscale_select);
+			mCurrentToolButton.setBackgroundResource(R.drawable.grayscale_select);
 			mDimensionToolButton.setBackgroundResource(R.drawable.ruler);
+			
+			mCLUTNormalButton.setVisibility(View.VISIBLE);
+			mCLUTInverseButton.setVisibility(View.VISIBLE);
+			mCLUTRainbowButton.setVisibility(View.VISIBLE);
 
 		}
+		
+		if (!mLockToolBar)
+			hideToolBar(view);
 
 	}
 	
@@ -958,6 +1100,253 @@ public class DICOMViewer extends Activity implements SeekBar.OnSeekBarChangeList
 	
 	}
 	
+	/**
+	 * Hide navigation tool bar if it is visible.
+	 * @param view
+	 */
+	public void hideNavigationBar(View view) {
+		
+		if (mNavigationBar.getVisibility() == View.VISIBLE) {
+			
+			mNavigationBar.setVisibility(View.INVISIBLE);
+			
+			if (mMenu != null) {
+				
+				MenuItem showHideNavigationBar = 
+					mMenu.findItem(R.id.showHide_serieSeekBar);
+				
+				if (showHideNavigationBar != null) {
+					showHideNavigationBar.setChecked(false);
+				}
+				
+			}
+			
+		}
+		
+	}
+	
+	/**
+	 * Hide navigation tool bar if it is visible.
+	 * @param view
+	 */
+	public void hideGrayscaleWindow(View view) {
+		
+		if (mGrayscaleWindow.getVisibility() == View.VISIBLE) {
+			
+			mGrayscaleWindow.setVisibility(View.INVISIBLE);
+			
+			if (mMenu != null) {
+				
+				MenuItem showHideGrayscaleWindow = 
+					mMenu.findItem(R.id.showHide_grayscaleWindow);
+				
+				if (showHideGrayscaleWindow != null) {
+					showHideGrayscaleWindow.setChecked(false);
+				}
+				
+			}
+			
+		}
+		
+	}
+	
+	/**
+	 * Hide tool bar if it is visible.
+	 * @param view
+	 */
+	public void hideToolBar(View view) {
+		
+		if (mToolBar.getVisibility() == View.VISIBLE) {
+			
+			mToolBar.setVisibility(View.GONE);
+			
+			// If the tool bar is locked then the current icon
+			// is invisible too
+			if (!mLockToolBar) {
+				
+				mCurrentToolButton.setVisibility(View.VISIBLE);
+				
+			} else {
+				
+				if (mMenu != null) {
+					
+					MenuItem showHideToolBar = 
+						mMenu.findItem(R.id.showHide_toolbar);
+					
+					if (showHideToolBar != null) {
+						showHideToolBar.setChecked(false);
+					}
+					
+				}
+				
+			}
+			
+		}
+		
+	}
+	
+	/**
+	 * Hide tool bar if it is visible.
+	 * @param view
+	 */
+	public void showToolBar(View view) {
+		
+		if (mToolBar.getVisibility() == View.GONE) {
+			
+			mCurrentToolButton.setVisibility(View.INVISIBLE);
+			mToolBar.setVisibility(View.VISIBLE);
+			
+			if (mMenu != null) {
+				
+				MenuItem showHideToolBar = 
+					mMenu.findItem(R.id.showHide_toolbar);
+				
+				if (showHideToolBar != null) {
+					showHideToolBar.setChecked(true);
+				}
+				
+			}
+			
+		}
+		
+	}
+	
+	/**
+	 * Set the CLUT mode.
+	 * @param view
+	 */
+	public synchronized void setCLUTMode(View view) {
+		
+		if (view == null)
+			return;
+		
+		switch (view.getId())
+		{
+		
+		case R.id.clutNormal:
+			mCLUTNormalButton.setBackgroundResource(
+					R.drawable.clut_normal_select);
+			mCLUTInverseButton.setBackgroundResource(
+					R.drawable.clut_inverse);
+			mCLUTRainbowButton.setBackgroundResource(
+					R.drawable.clut_rainbow);
+			
+			mDICOMViewerData.setCLUTMode(CLUTMode.NORMAL);
+			
+			// Update the menu
+			if (mMenu != null) {
+				
+				MenuItem showHideToolBar = 
+					mMenu.findItem(R.id.show_normalLUT);
+				
+				if (showHideToolBar != null) {
+					showHideToolBar.setChecked(true);
+				}
+				
+			}
+			
+			break;
+			
+		case R.id.clutInverse:
+			mCLUTNormalButton.setBackgroundResource(
+					R.drawable.clut_normal);
+			mCLUTInverseButton.setBackgroundResource(
+					R.drawable.clut_inverse_select);
+			mCLUTRainbowButton.setBackgroundResource(
+					R.drawable.clut_rainbow);
+			
+			mDICOMViewerData.setCLUTMode(CLUTMode.INVERSE);
+			
+			if (mMenu != null) {
+				
+				MenuItem showHideToolBar = 
+					mMenu.findItem(R.id.show_inverseLUT);
+				
+				if (showHideToolBar != null) {
+					showHideToolBar.setChecked(true);
+				}
+				
+			}
+			
+			break;
+			
+		case R.id.clutRainbow:
+			mCLUTNormalButton.setBackgroundResource(
+					R.drawable.clut_normal);
+			mCLUTInverseButton.setBackgroundResource(
+					R.drawable.clut_inverse);
+			mCLUTRainbowButton.setBackgroundResource(
+					R.drawable.clut_rainbow_select);
+			
+			mDICOMViewerData.setCLUTMode(CLUTMode.RAINBOW);
+			
+			if (mMenu != null) {
+				
+				MenuItem showHideToolBar = 
+					mMenu.findItem(R.id.show_rainbowCLUT);
+				
+				if (showHideToolBar != null) {
+					showHideToolBar.setChecked(true);
+				}
+				
+			}
+			
+			break;
+		
+		}
+		
+		mGrayscaleWindow.updateCLUTMode();
+		
+		mImageView.draw();
+		
+		if (!mLockToolBar)
+			hideToolBar(null);
+		
+	}
+	
+	/**
+	 * Lock/unlock the tool bar.
+	 * @param view
+	 */
+	public void lockUnlockToolBar(View view) {
+		
+		if (mLockToolBar) {
+			
+			mLockToolBar = false;
+			mLockUnlockToolBar.setBackgroundResource(R.drawable.unlock);
+			
+			if (mMenu != null) {
+				
+				MenuItem showHideToolBar = 
+					mMenu.findItem(R.id.lock_toolbar);
+				
+				if (showHideToolBar != null) {
+					showHideToolBar.setChecked(false);
+				}
+				
+			}
+			
+			hideToolBar(view);
+			
+		} else {
+			
+			mLockToolBar = true;
+			mLockUnlockToolBar.setBackgroundResource(R.drawable.lock);
+			
+			if (mMenu != null) {
+				
+				MenuItem showHideToolBar = 
+					mMenu.findItem(R.id.lock_toolbar);
+				
+				if (showHideToolBar != null) {
+					showHideToolBar.setChecked(true);
+				}
+				
+			}
+			
+		}
+		
+	}
 	
 	// ---------------------------------------------------------------
 	// - FUNCTIONS
@@ -1251,8 +1640,43 @@ public class DICOMViewer extends Activity implements SeekBar.OnSeekBarChangeList
 	
 	
 	// ---------------------------------------------------------------
-	// - VARIABLES: LOADING HANDLER
+	// - <final> Class
 	// ---------------------------------------------------------------
+	
+	/**
+	 * The OnLongClickListener.
+	 */
+	private final View.OnLongClickListener onLongClickListener
+								= new View.OnLongClickListener() {
+		
+		public boolean onLongClick(View view) {
+			
+			if (view == null)
+				return false;
+			
+			switch(view.getId()) {
+			
+			case R.id.toolBar:
+				hideToolBar(view);
+				return true;
+				
+			case R.id.grayscaleImageView:
+				hideGrayscaleWindow(view);
+				return true;
+			
+			case R.id.navigationToolbar:
+			case R.id.previousImageButton:
+			case R.id.nextImageButton:
+			case R.id.serieSeekBar:
+				hideNavigationBar(view);
+				return true;
+			
+			default:
+				return false;
+
+			}
+		}
+	};
 	
 	private final Handler loadingHandler = new Handler() {
 		

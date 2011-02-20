@@ -27,7 +27,7 @@
  *
  * Released date: 17-02-2011
  *
- * Version: 1.0
+ * Version: 1.1
  *
  */
 
@@ -61,7 +61,7 @@ import be.ac.ulb.lisa.idot.image.data.LISAImageGray16Bit;
  * that contains this View.
  * 
  * @author Pierre Malarme
- * @version 1.0
+ * @version 1.1
  *
  */
 public class DICOMImageView extends ImageView implements OnTouchListener {
@@ -214,12 +214,32 @@ public class DICOMImageView extends ImageView implements OnTouchListener {
 		
 	}
 	
+	// This function is override to center the image
+	// when the size of the screen change
+	/* (non-Javadoc)
+	 * @see android.view.View#onSizeChanged(int, int, int, int)
+	 */
+	@Override
+	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+
+		// If the image is not null, center it
+		if (mImage != null)
+			center();
+		
+		super.onSizeChanged(w, h, oldw, oldh);
+		
+	}
+	
 	
 	// ---------------------------------------------------------------
 	// + <implement> FUNCTIONS
 	// ---------------------------------------------------------------
 	
 	public boolean onTouch(View v, MotionEvent event) {
+		
+		if (mImage == null
+				|| mDICOMViewerData == null)
+			return false;
 		
 		// Get the tool mode
 		short toolMode = mDICOMViewerData.getToolMode();
@@ -230,7 +250,7 @@ public class DICOMImageView extends ImageView implements OnTouchListener {
 		case MotionEvent.ACTION_DOWN:
 			
 			// Double tap
-			if ((System.currentTimeMillis() - mTouchTime) < 250) {
+			if ((System.currentTimeMillis() - mTouchTime) < 450) {
 				
 				// The touch mode is set to none
 				mTouchMode = TouchMode.NONE;
@@ -735,6 +755,37 @@ public class DICOMImageView extends ImageView implements OnTouchListener {
 		
 	}
 	
+	/**
+	 * Center the image in X and/or Y regarding
+	 * the dimension of the scaled image and the dimension
+	 * of the ImageView.
+	 */
+	public void center() {
+		
+		// Scaled image sizes.
+		float scaledImageWidth = (float) mImage.getWidth() * mScaleFactor;
+		float scaledImageHeight = (float) mImage.getHeight() * mScaleFactor;
+		
+		if (scaledImageWidth <= getMeasuredWidth()
+				&& scaledImageHeight <= getMeasuredHeight()) {
+			
+			// Compute the translation
+			float dx = ((float) getMeasuredWidth() - scaledImageWidth) / 2f;
+			float dy = ((float) getMeasuredHeight() - scaledImageHeight) / 2f;
+			
+			mMatrix.set(getImageMatrix());
+			
+			mMatrix.setScale(mScaleFactor, mScaleFactor, 0f, 0f);
+			mMatrix.postTranslate(dx, dy);
+			
+			
+			// Set the Image Matrix
+			setImageMatrix(mMatrix);
+			
+		}
+		
+	}
+
 	/**
 	 * Set the LISA 16-Bit grayscale image.
 	 * 
