@@ -27,7 +27,7 @@
  
   Released date: 17-02-2011
  
-  Version: 1.1
+  Version: 1.2
  -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
  android:orientation="horizontal"
@@ -65,7 +65,7 @@
 						android:background="@drawable/ruler" />
 						
 					<View
-	 					android:layout_width="match_parent"
+	 					android:layout_width="fill_parent"
 	 					android:layout_height="1dip"
 	 					android:layout_marginTop="10dip"
 	 					android:layout_marginBottom="10dip"
@@ -103,7 +103,7 @@
 						android:background="@drawable/clut_rainbow" />
 						
 					<!-- <View
-	 					android:layout_width="match_parent"
+	 					android:layout_width="fill_parent"
 	 					android:layout_height="1dip"
 	 					android:layout_marginTop="10dip"
 	 					android:layout_marginBottom="10dip"
@@ -128,19 +128,19 @@
 				android:background="@drawable/unlock" />
 	 		
 	 		<View
-	 			android:layout_width="match_parent"
+	 			android:layout_width="fill_parent"
 	 			android:layout_height="1dip"
 	 			android:layout_marginBottom="2dip"
 	 			android:background="#ff7d7d7d" />
 	 		
 	 		<View
-	 			android:layout_width="match_parent"
+	 			android:layout_width="fill_parent"
 	 			android:layout_height="1dip"
 	 			android:layout_marginBottom="2dip"
 	 			android:background="#ff7d7d7d" />
 	 			
 	 		<View
-	 			android:layout_width="match_parent"
+	 			android:layout_width="fill_parent"
 	 			android:layout_height="1dip"
 	 			android:layout_marginBottom="10dip"
 	 			android:background="#ff7d7d7d" />
@@ -170,8 +170,8 @@
         android:layout_weight="1">
 	
 		<FrameLayout
-	   	android:layout_width="match_parent" 
-        android:layout_height="match_parent">
+	   	android:layout_width="fill_parent" 
+        android:layout_height="fill_parent">
 	   
 	   
 
@@ -209,7 +209,7 @@
 			android:id="@+id/grayscaleImageView"
 			android:src="@drawable/icon"
 			android:layout_width="wrap_content"
-			android:layout_height="match_parent"
+			android:layout_height="fill_parent"
 			android:layout_alignParentRight="true"
 			android:minWidth="100dip" />
 			
