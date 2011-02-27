@@ -358,6 +358,7 @@ public class DICOMViewer extends Activity implements SeekBar.OnSeekBarChangeList
 			
 			// Get the files array = get the files contained
 			// in the parent of the current file
+			// If Single Image View is on we need a minimal files array
 			if (!mSingle_image_view){
 				mFileArray = currentFile.getParentFile().listFiles(new DICOMFileFilter());
 			} else {
