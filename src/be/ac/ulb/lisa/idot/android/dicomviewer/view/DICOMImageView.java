@@ -654,6 +654,17 @@ public class DICOMImageView extends ImageView implements OnTouchListener {
 		Bitmap imageBitmap = Bitmap.createBitmap(outputPixels, mImage.getWidth(),
 				mImage.getHeight(), Bitmap.Config.ARGB_8888);
 		
+		// check rotate temp
+		
+		if (true) {
+			
+			Matrix m = new Matrix();
+			m.postRotate(90);
+			imageBitmap = Bitmap.createBitmap(imageBitmap,
+					0,	0, mImage.getWidth(), mImage.getHeight(), m, true);
+		}
+		
+		
 		// Set the image
 		setImageBitmap(imageBitmap);
 		
