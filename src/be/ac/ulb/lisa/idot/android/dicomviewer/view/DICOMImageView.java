@@ -677,8 +677,9 @@ public class DICOMImageView extends ImageView implements OnTouchListener {
 	 * Should this image be rotated?
 	 * @param rotate
 	 */
-	public void setRotate(boolean rotate) {
-		mIsRotate = rotate;
+	public void toggleRotate() {
+		mIsRotate = !mIsRotate;
+		draw();
 	}
 	
 	/**

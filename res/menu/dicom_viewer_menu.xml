@@ -114,6 +114,9 @@
     	
     </item>
     
+    <item android:id="@+id/ddv_RotateImage"
+    	android:title="Rotate"/>
+    
     <item android:id="@+id/ddv_CacheAllImage"
     	android:title="Cache all images" />
     

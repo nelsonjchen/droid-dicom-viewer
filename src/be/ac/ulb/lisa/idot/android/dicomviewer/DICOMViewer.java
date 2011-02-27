@@ -825,6 +825,10 @@ public class DICOMViewer extends Activity implements SeekBar.OnSeekBarChangeList
     			cacheImages();
             	return true;
             	
+            case R.id.ddv_RotateImage:
+            	mImageView.toggleRotate();
+            	return true;
+            	
             // ABOUT DIALOG	
             case R.id.ddv_DialogAbout:
             	Dialog dialog = new Dialog(this);

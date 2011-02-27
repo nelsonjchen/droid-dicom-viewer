@@ -38,8 +38,9 @@ public final class R {
         public static final int clutRainbow=0x7f060009;
         public static final int columnTextView=0x7f06000e;
         public static final int currentToolButton=0x7f06000c;
-        public static final int ddv_CacheAllImage=0x7f060027;
-        public static final int ddv_DialogAbout=0x7f060028;
+        public static final int ddv_CacheAllImage=0x7f060028;
+        public static final int ddv_DialogAbout=0x7f060029;
+        public static final int ddv_RotateImage=0x7f060027;
         public static final int dimensionMode=0x7f060005;
         public static final int fileName=0x7f060016;
         public static final int file_chooser_mainLayout=0x7f060017;
