@@ -1425,6 +1425,12 @@ public class DICOMViewer extends Activity implements SeekBar.OnSeekBarChangeList
 					" it is because this series is not adapted to your" +
 					" Android(TM) device.");
 			
+		} catch (ArrayIndexOutOfBoundsException ex) {
+			
+			showExitAlertDialog("[ERROR] Image drawing",
+					"An uncatchable error occurs while " +
+					"drawing the DICOM image.");
+			
 		}
 		
 	}
