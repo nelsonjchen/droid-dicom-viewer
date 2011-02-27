@@ -318,6 +318,7 @@ public class DICOMViewer extends Activity implements SeekBar.OnSeekBarChangeList
 				
 				fileName = extras == null ? null : extras.getString("DICOMFileName");
 				
+				// For Intents from DropBox or OI FileManager
 				if (!(intent.hasExtra("DICOMFileName"))){
 					try {
 						fileName = (new URI(intent.getDataString())).getPath();
