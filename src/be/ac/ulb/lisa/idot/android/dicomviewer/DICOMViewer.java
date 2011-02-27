@@ -35,6 +35,8 @@ package be.ac.ulb.lisa.idot.android.dicomviewer;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 
 import android.app.Activity;
@@ -316,6 +318,12 @@ public class DICOMViewer extends Activity implements SeekBar.OnSeekBarChangeList
 				
 				fileName = extras == null ? null : extras.getString("DICOMFileName");
 				
+				if (!(intent.hasExtra("DICOMFileName"))){
+					try {
+						fileName = (new URI(intent.getDataString())).getPath();
+					} catch (URISyntaxException e) {
+					}
+				}
 			}
 			
 		}

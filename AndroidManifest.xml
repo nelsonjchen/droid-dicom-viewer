@@ -35,7 +35,15 @@
           android:label="@string/app_name">
         <activity android:name=".DICOMViewer"
                   android:screenOrientation="landscape" android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
-            
+        <intent-filter>
+        	<action android:name="android.intent.action.VIEW" />
+			    <category android:name="android.intent.category.DEFAULT" />
+			    <category android:name="android.intent.category.BROWSABLE" />
+			    <data android:scheme="file" />
+			    <data android:mimeType="*/*" />
+			    <data android:host="*" />
+			    <data android:pathPattern=".*\\.dcm" />
+        </intent-filter>
         </activity>
     <activity android:name=".DICOMFileChooser"
     		  android:label="@string/app_name">
