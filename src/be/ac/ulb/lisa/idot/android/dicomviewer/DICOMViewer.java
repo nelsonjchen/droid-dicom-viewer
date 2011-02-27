@@ -211,6 +211,13 @@ public class DICOMViewer extends Activity implements SeekBar.OnSeekBarChangeList
 	 */
 	private Menu mMenu;
 	
+	// SINGULAR IMAGE VARIABLE
+	
+	/**
+	 * Is this file meant to be viewed as just one?
+	 */
+	private boolean mSingle_image_view = false;
+	
 	// DICOM FILE LOADER THREAD
 	/**
 	 * File loader thread.
@@ -322,6 +329,7 @@ public class DICOMViewer extends Activity implements SeekBar.OnSeekBarChangeList
 				if (!(intent.hasExtra("DICOMFileName"))){
 					try {
 						fileName = (new URI(intent.getDataString())).getPath();
+						mSingle_image_view = true;
 					} catch (URISyntaxException e) {
 					}
 				}
@@ -350,7 +358,12 @@ public class DICOMViewer extends Activity implements SeekBar.OnSeekBarChangeList
 			
 			// Get the files array = get the files contained
 			// in the parent of the current file
-			mFileArray = currentFile.getParentFile().listFiles(new DICOMFileFilter());
+			if (!mSingle_image_view){
+				mFileArray = currentFile.getParentFile().listFiles(new DICOMFileFilter());
+			} else {
+				mFileArray = new File[1];
+				mFileArray[0] = currentFile;
+			}
 			
 			// Sort the files array
 			Arrays.sort(mFileArray);
