@@ -1658,6 +1658,7 @@ public class DICOMViewer extends Activity implements SeekBar.OnSeekBarChangeList
 		
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setMessage(message)
+			   .setIcon(android.R.drawable.ic_dialog_alert)
 			   .setTitle(title)
 		       .setCancelable(false)
 		       .setPositiveButton("Exit", new DialogInterface.OnClickListener() {
