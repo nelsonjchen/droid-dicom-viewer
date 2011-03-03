@@ -154,7 +154,7 @@ public class DICOMFileChooser extends ListActivity {
 		mMainLayout = (LinearLayout) findViewById(R.id.file_chooser_mainLayout);
 		
 		// Defined the cached file TextView (even if it is not
-		// shwon) and define the on click listener
+		// shown) and define the on click listener
 		mCachedFileTextView = new TextView(this);
 		mCachedFileTextView.setPadding(10, 20, 10, 20);
 		mCachedFileTextView.setBackgroundColor(0xffffffff);
