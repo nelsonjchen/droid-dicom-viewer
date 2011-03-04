@@ -6,3 +6,6 @@
 *.project
 *.settings
 bin/
+*.iml
+*.ipr
+*.iws
