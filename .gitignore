@@ -1,4 +1,5 @@
 *~
+gen/
 *.DS_Store
 *.class
 *java#
