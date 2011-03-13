@@ -6,5 +6,6 @@ import android.os.Bundle;
 public class DICOMFileInfo extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.dicom_info_viewer);
     }
 }

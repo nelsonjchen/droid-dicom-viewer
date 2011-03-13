@@ -51,4 +51,5 @@ It supports only grayscale not compressed DICOM files.
 It parses implicit and explicit (little endian and big endian)
 value representation (VR).\n\n
 2011 � Pierre Malarme</string>
+    <string name="dicom_info_name">DICOM File Information</string>
 </resources>
