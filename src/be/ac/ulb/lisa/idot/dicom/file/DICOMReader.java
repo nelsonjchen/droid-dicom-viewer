@@ -811,7 +811,12 @@ public class DICOMReader extends DICOMBufferedInputStream {
 			} else if (tag == 0x00020016) {
 				
 				mMetaInformation.setAET(element.getValueString());
-			}
+
+            // Patient name
+			} else if (tag == 0x00100010) {
+
+                mMetaInformation.setPatientName(element.getValueString());
+            }
 			
 		}
 
