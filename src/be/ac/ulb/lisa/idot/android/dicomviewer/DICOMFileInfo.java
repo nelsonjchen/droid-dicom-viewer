@@ -98,17 +98,21 @@ public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
         line.append(" [");
         sq.vr().promptValue(data, bigEndian, null, cbuf, maxValLen, line);
         line.append("]");
-        outLine(in);
+        RowModel row = new RowModel();
+        row.setValue(line.toString());
+        row.setDescription(outLine(in));
+        info.add(row);
+
     }
 
     public void outElement(DicomInputStream in) throws IOException{
 
         if (hasItems(in)) {
-            outLine(in);
+//            outLine(in);
             readItems(in);
         } else {
             outValue(in);
-            outLine(in);
+//            outLine(in);
         }
 
 
@@ -125,6 +129,11 @@ public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
         vr.promptValue(val, bigEndian, dcmobj.getSpecificCharacterSet(),
                 cbuf, maxValLen, line);
         line.append("]");
+        RowModel row = new RowModel();
+        row.setValue(line.toString());
+        row.setDescription(outLine(in));
+        info.add(row);
+
         if (tag == Tag.SpecificCharacterSet
                 || tag == Tag.TransferSyntaxUID
                 || TagUtils.isPrivateCreatorDataElement(tag)) {
@@ -145,13 +154,18 @@ public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
         return in.valueLength() == -1 || in.vr() == VR.SQ;
     }
 
-    private void outLine(DicomInputStream in) {
-        in.getDicomObject().nameOf(in.tag());
+    private String outLine(DicomInputStream in) {
+        return in.getDicomObject().nameOf(in.tag());
     }
 
 
     class RowModel {
         String description;
+        String value;
+
+        public String toString() {
+            return description + " " + value;
+        }
 
         public String getDescription() {
             return description;
@@ -169,7 +183,6 @@ public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
             this.value = value;
         }
 
-        String value;
     }
 
     class DICOMMetaAdapter extends ArrayAdapter<RowModel> {
