@@ -5,8 +5,11 @@ import android.os.Bundle;
 import be.ac.ulb.lisa.idot.dicom.DICOMException;
 import be.ac.ulb.lisa.idot.dicom.data.DICOMMetaInformation;
 import be.ac.ulb.lisa.idot.dicom.file.DICOMReader;
+import org.dcm4che2.data.BasicDicomObject;
+import org.dcm4che2.io.DicomInputStream;
 
 import java.io.EOFException;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -18,14 +21,17 @@ public class DICOMFileInfo extends Activity {
 
         String file_loc = "/sdcard/dropbox/school/adiview_stuff/working_images/CT-MONO2-8-abdo.dcm";
         try {
-            DICOMReader dicomReader = new DICOMReader(file_loc);
+            File file = new File(file_loc);
 
-            DICOMMetaInformation metaInformation = dicomReader.parseMetaInformation();
+            DicomInputStream dis = new DicomInputStream(file);
 
-            dicomReader.close();
+            BasicDicomObject bdo = new BasicDicomObject();
+            dis.readDicomObject(bdo,-1);
+
+            dis.close();
+
+
         } catch (FileNotFoundException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (DICOMException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } catch (EOFException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
