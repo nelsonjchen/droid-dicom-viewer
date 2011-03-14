@@ -491,10 +491,9 @@ public class DICOMFileChooser extends ListActivity {
 		}
 		
 		// Sort both list
-		Collections.sort(directoryList);
-		Collections.sort(fileList);
-		// TODO Create a comparator to sort without the case sensitive
-		
+		Collections.sort(directoryList,String.CASE_INSENSITIVE_ORDER);
+		Collections.sort(fileList,String.CASE_INSENSITIVE_ORDER);
+
 		// Set the number of dicom file
 		mTotal = fileList.size();
 		
