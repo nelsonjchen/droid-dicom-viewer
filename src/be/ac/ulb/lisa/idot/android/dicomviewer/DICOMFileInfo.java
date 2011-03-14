@@ -10,12 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import org.dcm4che2.data.BasicDicomObject;
-import org.dcm4che2.data.DicomElement;
-import org.dcm4che2.data.Tag;
-import org.dcm4che2.data.VR;
+import org.dcm4che2.data.*;
 import org.dcm4che2.io.DicomInputHandler;
 import org.dcm4che2.io.DicomInputStream;
+import org.dcm4che2.util.TagUtils;
 
 import java.io.EOFException;
 import java.io.File;
@@ -27,6 +25,9 @@ import java.util.ArrayList;
 
 public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
     ArrayList<RowModel> info;
+    char[] cbuf = new char[64];
+    int maxValLen = 20;
+
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +57,7 @@ public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
-        finish();
+//        finish();
 
     }
 
@@ -67,13 +68,13 @@ public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
                 if (in.sq().vr() != VR.SQ && in.valueLength() != -1) {
                     outFragment(in);
                 } else {
-//                    outItem(in);
+                    outItem(in);
                 }
                 break;
             case Tag.ItemDelimitationItem:
             case Tag.SequenceDelimitationItem:
-//                if (in.level() > 0)
-//                    outItem(in);
+                if (in.level() > 0)
+                    outItem(in);
                 break;
             default:
                 outElement(in);
@@ -83,38 +84,71 @@ public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
 
     }
 
+    private void outItem(DicomInputStream in) throws IOException{
+        in.readValue(in);
+    }
+
     public void outFragment(DicomInputStream in) throws IOException{
-        char[] cbuf = new char[64];
+        in.readValue(in);
         in.readValue(in);
         DicomElement sq = in.sq();
         byte[] data = sq.removeFragment(0);
         boolean bigEndian = in.getTransferSyntax().bigEndian();
-        sq.vr().promptValue(data, bigEndian, null, cbuf, 0, new StringBuffer());
+        StringBuffer line = new StringBuffer();
+        line.append(" [");
+        sq.vr().promptValue(data, bigEndian, null, cbuf, maxValLen, line);
+        line.append("]");
+        outLine(in);
     }
 
-    public void outElement(DicomInputStream in) {
+    public void outElement(DicomInputStream in) throws IOException{
 
-        boolean bigEndian = in.getTransferSyntax().bigEndian();
-        int tag = in.tag();
-        VR vr = in.vr();
-        byte[] val = new byte[0];
-        try {
-            val = in.readBytes(in.valueLength());
-        } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        if (hasItems(in)) {
+            outLine(in);
+            readItems(in);
+        } else {
+            outValue(in);
+            outLine(in);
         }
 
+
+    }
+
+     private void outValue(DicomInputStream in) throws IOException {
+        int tag = in.tag();
+        VR vr = in.vr();
+        byte[] val = in.readBytes(in.valueLength());
+        DicomObject dcmobj = in.getDicomObject();
+        boolean bigEndian = in.getTransferSyntax().bigEndian();
+        StringBuffer line = new StringBuffer();
+        line.append(" [");
+        vr.promptValue(val, bigEndian, dcmobj.getSpecificCharacterSet(),
+                cbuf, maxValLen, line);
+        line.append("]");
+        if (tag == Tag.SpecificCharacterSet
+                || tag == Tag.TransferSyntaxUID
+                || TagUtils.isPrivateCreatorDataElement(tag)) {
+            dcmobj.putBytes(tag, vr, val, bigEndian);
+        }
         if (tag == 0x00020000) {
             in.setEndOfFileMetaInfoPosition(
                     in.getStreamPosition() + vr.toInt(val, bigEndian));
         }
-
-        RowModel model = new RowModel();
-        model.setDescription(in.getDicomObject().nameOf(tag));
-        info.add(model);
-
-
     }
+
+     private void readItems(DicomInputStream in) throws IOException {
+        in.readValue(in);
+        in.getDicomObject().remove(in.tag());
+    }
+
+    private boolean hasItems(DicomInputStream in) {
+        return in.valueLength() == -1 || in.vr() == VR.SQ;
+    }
+
+    private void outLine(DicomInputStream in) {
+        in.getDicomObject().nameOf(in.tag());
+    }
+
 
     class RowModel {
         String description;
