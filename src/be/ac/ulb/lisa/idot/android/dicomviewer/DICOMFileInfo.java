@@ -11,7 +11,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import org.dcm4che2.data.BasicDicomObject;
+import org.dcm4che2.data.DicomElement;
 import org.dcm4che2.data.Tag;
+import org.dcm4che2.data.VR;
 import org.dcm4che2.io.DicomInputHandler;
 import org.dcm4che2.io.DicomInputStream;
 
@@ -20,6 +22,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+
+
 
 public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
     ArrayList<RowModel> info;
@@ -60,11 +64,11 @@ public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
     public boolean readValue(DicomInputStream in) throws IOException {
         switch (in.tag()){
             case Tag.Item:
-//                if (in.sq().vr() != VR.SQ && in.valueLength() != -1) {
-//                    outFragment(in);
-//                } else {
+                if (in.sq().vr() != VR.SQ && in.valueLength() != -1) {
+                    outFragment(in);
+                } else {
 //                    outItem(in);
-//                }
+                }
                 break;
             case Tag.ItemDelimitationItem:
             case Tag.SequenceDelimitationItem:
@@ -79,11 +83,37 @@ public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
 
     }
 
+    public void outFragment(DicomInputStream in) throws IOException{
+        char[] cbuf = new char[64];
+        in.readValue(in);
+        DicomElement sq = in.sq();
+        byte[] data = sq.removeFragment(0);
+        boolean bigEndian = in.getTransferSyntax().bigEndian();
+        sq.vr().promptValue(data, bigEndian, null, cbuf, 0, new StringBuffer());
+    }
+
     public void outElement(DicomInputStream in) {
+
+        boolean bigEndian = in.getTransferSyntax().bigEndian();
+        int tag = in.tag();
+        VR vr = in.vr();
+        byte[] val = new byte[0];
+        try {
+            val = in.readBytes(in.valueLength());
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+        if (tag == 0x00020000) {
+            in.setEndOfFileMetaInfoPosition(
+                    in.getStreamPosition() + vr.toInt(val, bigEndian));
+        }
+
         RowModel model = new RowModel();
-        model.setDescription(in.getDicomObject().nameOf(in.tag()));
+        model.setDescription(in.getDicomObject().nameOf(tag));
         info.add(model);
-        return;
+
+
     }
 
     class RowModel {
