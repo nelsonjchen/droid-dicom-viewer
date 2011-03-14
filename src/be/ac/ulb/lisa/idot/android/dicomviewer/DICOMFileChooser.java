@@ -266,7 +266,7 @@ public class DICOMFileChooser extends ListActivity {
 			
 			try {
 				
-				// Create a DICOMReader to parse meta information
+				// Create a DICOMReader to parse meta info
 				DICOMReader dicomReader = new DICOMReader(mTopDirectory.getPath() + "/" + itemName);
 				
 				DICOMMetaInformation metaInformation = dicomReader.parseMetaInformation();

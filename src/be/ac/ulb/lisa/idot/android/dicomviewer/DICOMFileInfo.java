@@ -1,14 +1,17 @@
 package be.ac.ulb.lisa.idot.android.dicomviewer;
 
+import android.*;
+import android.R;
 import android.app.Activity;
+import android.app.ListActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import be.ac.ulb.lisa.idot.dicom.DICOMException;
-import be.ac.ulb.lisa.idot.dicom.data.DICOMMetaInformation;
-import be.ac.ulb.lisa.idot.dicom.file.DICOMReader;
+import android.widget.TextView;
 import org.dcm4che2.data.BasicDicomObject;
 import org.dcm4che2.data.Tag;
-import org.dcm4che2.data.VR;
 import org.dcm4che2.io.DicomInputHandler;
 import org.dcm4che2.io.DicomInputStream;
 
@@ -18,8 +21,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class DICOMFileInfo extends Activity implements DicomInputHandler {
-    ArrayList<RowModel> information;
+public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
+    ArrayList<RowModel> info;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,9 +34,11 @@ public class DICOMFileInfo extends Activity implements DicomInputHandler {
             DicomInputStream dis = new DicomInputStream(file);
 
             BasicDicomObject bdo = new BasicDicomObject();
+
+            info = new ArrayList<RowModel>();
+
             dis.setHandler(this);
             dis.readDicomObject(bdo, -1);
-            information = new ArrayList<RowModel>();
 
 
 
@@ -84,5 +89,25 @@ public class DICOMFileInfo extends Activity implements DicomInputHandler {
         String value;
     }
 
+    class DICOMMetaAdapter extends ArrayAdapter<RowModel> {
+        DICOMMetaAdapter() {
+            super(DICOMFileInfo.this,android.R.layout.simple_list_item_1, info);
+        }
 
+        public View getView(int position, View convertView, ViewGroup parent){
+            View row = convertView;
+
+            if (row == null){
+                LayoutInflater inflater = getLayoutInflater();
+
+                row = inflater.inflate(android.R.layout.simple_list_item_1,parent,false);
+            }
+
+            TextView label = (TextView) row.findViewById(android.R.id.text1);
+
+            label.setText(info.get(position).value);
+
+            return(row);
+        }
+    }
 }
