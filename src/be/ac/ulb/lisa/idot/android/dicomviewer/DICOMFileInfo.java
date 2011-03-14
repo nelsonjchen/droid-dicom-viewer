@@ -4,6 +4,8 @@ import android.*;
 import android.R;
 import android.app.Activity;
 import android.app.ListActivity;
+import android.content.res.AssetManager;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,10 +17,7 @@ import org.dcm4che2.io.DicomInputHandler;
 import org.dcm4che2.io.DicomInputStream;
 import org.dcm4che2.util.TagUtils;
 
-import java.io.EOFException;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 
 
@@ -38,14 +37,16 @@ public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
 
             DicomInputStream dis = new DicomInputStream(file);
 
+
             BasicDicomObject bdo = new BasicDicomObject();
+            ElementDictionary dict = ElementDictionary.getDictionary();
+            AssetManager asm = getAssets();
+            ElementDictionary.reloadDictionaries();
 
             info = new ArrayList<RowModel>();
 
             dis.setHandler(this);
             dis.readDicomObject(bdo, -1);
-
-
 
             dis.close();
 
