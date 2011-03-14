@@ -86,6 +86,23 @@ public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
 
     class RowModel {
         String description;
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
+        }
+
         String value;
     }
 
@@ -105,7 +122,7 @@ public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
 
             TextView label = (TextView) row.findViewById(android.R.id.text1);
 
-            label.setText(info.get(position).value);
+            label.setText(info.get(position).getValue());
 
             return(row);
         }
