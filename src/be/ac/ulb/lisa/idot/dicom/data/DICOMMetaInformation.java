@@ -79,9 +79,14 @@ public class DICOMMetaInformation {
 	private String mImplementationVersionName = "";
 	
 	/**
-	 * Application Entity Title. 
+	 * Application Entity Title.
 	 */
 	private String mAET = "";
+
+    /**
+	 * Patient Name
+	 */
+	private String mPatientName = "";
 	
 	
 	// ---------------------------------------------------------------
@@ -196,4 +201,18 @@ public class DICOMMetaInformation {
 		this.mAET = mAET;
 	}
 
+    /**
+     * @return the patient's name
+     */
+    public String getPatientName() {
+        return mPatientName;
+    }
+
+    /**
+     *
+     * @param mPatientName is the patrient name to set
+     */
+    public void setPatientName(String mPatientName) {
+        this.mPatientName = mPatientName;
+    }
 }
