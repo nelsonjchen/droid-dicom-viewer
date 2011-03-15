@@ -33,8 +33,6 @@ public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
         super.onCreate(savedInstanceState);
 
         String file_loc = "/sdcard/dropbox/school/adiview_stuff/working_images/CT-MONO2-8-abdo.dcm";
-        String dict_loc = "/sdcard/dropbox/school/adiview_stuff/dictionary.xml";
-
 
         try {
             File file = new File(file_loc);
@@ -46,15 +44,6 @@ public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
             ElementDictionary dict = ElementDictionary.getDictionary();
             AssetManager asm = getAssets();
 
-            File dict_file = new File(dict_loc);
-
-            ElementDictionary dicti = ElementDictionary.getDictionary();
-
-            try {
-                dicti.loadXML(dict_file);
-            } catch (SAXException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            }
 
             info = new ArrayList<RowModel>();
 
@@ -113,9 +102,7 @@ public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
         byte[] data = sq.removeFragment(0);
         boolean bigEndian = in.getTransferSyntax().bigEndian();
         StringBuffer line = new StringBuffer();
-        line.append(" [");
         sq.vr().promptValue(data, bigEndian, null, cbuf, maxValLen, line);
-        line.append("]");
         RowModel row = new RowModel();
         row.setValue(line.toString());
         row.setDescription(outLine(in));
@@ -143,10 +130,8 @@ public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
         DicomObject dcmobj = in.getDicomObject();
         boolean bigEndian = in.getTransferSyntax().bigEndian();
         StringBuffer line = new StringBuffer();
-        line.append(" [");
         vr.promptValue(val, bigEndian, dcmobj.getSpecificCharacterSet(),
                 cbuf, maxValLen, line);
-        line.append("]");
         RowModel row = new RowModel();
         row.setValue(line.toString());
         row.setDescription(outLine(in));
@@ -180,6 +165,7 @@ public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
     class RowModel {
         String description;
         String value;
+        int tag;
 
         public String toString() {
             return description + " " + value;
