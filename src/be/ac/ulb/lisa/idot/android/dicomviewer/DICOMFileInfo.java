@@ -2,6 +2,7 @@ package be.ac.ulb.lisa.idot.android.dicomviewer;
 
 
 import android.app.ListActivity;
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 import be.ac.ulb.lisa.idot.android.dicomviewer.data.DCM4CheTagNameHack;
 import org.dcm4che2.data.*;
 import org.dcm4che2.io.DicomInputHandler;
@@ -19,6 +21,8 @@ import java.io.EOFException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 
@@ -26,44 +30,84 @@ public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
     ArrayList<RowModel> info;
     char[] cbuf = new char[64];
     int maxValLen = 20;
+    String currentFileName = null;
+    private static final String FILE_NAME = "file_name";
 
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dicom_info_viewer);
+        // Get the file name from the savedInstanceState or from the intent
+        String fileName = null;
 
+        // If the saved instance state is not null get the file name
+        if (savedInstanceState != null) {
 
+            fileName = savedInstanceState.getString(FILE_NAME);
 
-        String file_loc = "/sdcard/dropbox/school/adiview_stuff/working_images/CT-MONO2-8-abdo.dcm";
+            // Get the intent
+        } else {
 
-        try {
-            File file = new File(file_loc);
+            Intent intent = getIntent();
 
-            DicomInputStream dis = new DicomInputStream(file);
+            if (intent != null) {
 
+                Bundle extras = intent.getExtras();
 
-            BasicDicomObject bdo = new BasicDicomObject();
-            ElementDictionary dict = ElementDictionary.getDictionary();
-            AssetManager asm = getAssets();
+                fileName = extras == null ? null : extras.getString("DICOMFileName");
 
+                // For Intents from DropBox or OI FileManager
+                if (!(intent.hasExtra("DICOMFileName"))){
+                    try {
+                        fileName = (new URI(intent.getDataString())).getPath();
+                    } catch (URISyntaxException e) {
 
-            info = new ArrayList<RowModel>();
+                    } catch (NullPointerException e) {
+                        fileName = null;
+                    }
+                }
+            }
 
-            dis.setHandler(this);
-            dis.readDicomObject(bdo, -1);
-
-            dis.close();
-
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (EOFException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
-        setListAdapter(new DICOMMetaAdapter());
+        // If the file name is null, alert the user and close
+        // the activity
+        if (fileName == null) {
+            Toast.makeText(this, "Filename is null" ,Toast.LENGTH_LONG).show();
+            finish();
+            // Load the file
+        } else {
+
+            try {
+                File file = new File(fileName);
+
+                DicomInputStream dis = new DicomInputStream(file);
+
+
+                BasicDicomObject bdo = new BasicDicomObject();
+                ElementDictionary dict = ElementDictionary.getDictionary();
+                AssetManager asm = getAssets();
+
+
+                info = new ArrayList<RowModel>();
+
+                dis.setHandler(this);
+                dis.readDicomObject(bdo, -1);
+
+                dis.close();
+
+                setListAdapter(new DICOMMetaAdapter());
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (EOFException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (IOException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+
+
+        }
+
 //        finish();
 
     }
@@ -125,7 +169,7 @@ public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
 
     }
 
-     private void outValue(DicomInputStream in) throws IOException {
+    private void outValue(DicomInputStream in) throws IOException {
         int tag = in.tag();
         VR vr = in.vr();
         byte[] val = in.readBytes(in.valueLength());
@@ -146,9 +190,9 @@ public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
             in.setEndOfFileMetaInfoPosition(
                     in.getStreamPosition() + vr.toInt(val, bigEndian));
         }
-     }
+    }
 
-     private void readItems(DicomInputStream in) throws IOException {
+    private void readItems(DicomInputStream in) throws IOException {
         in.readValue(in);
         in.getDicomObject().remove(in.tag());
     }
@@ -159,6 +203,14 @@ public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
 
     private String outLine(DicomInputStream in) {
         return in.getDicomObject().nameOf(in.tag());
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        // Save the current file name
+        outState.putString(FILE_NAME, currentFileName);
     }
 
 
