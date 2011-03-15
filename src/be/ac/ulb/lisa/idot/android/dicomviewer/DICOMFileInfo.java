@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import be.ac.ulb.lisa.idot.dicom.DICOMTag;
+import com.sun.xml.internal.ws.model.FieldSignature;
 import org.dcm4che2.data.*;
 import org.dcm4che2.io.DicomInputHandler;
 import org.dcm4che2.io.DicomInputStream;
@@ -19,8 +21,9 @@ import org.dcm4che2.util.TagUtils;
 import org.xml.sax.SAXException;
 
 import java.io.*;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
-
+import java.util.HashMap;
 
 
 public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
@@ -103,9 +106,7 @@ public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
         boolean bigEndian = in.getTransferSyntax().bigEndian();
         StringBuffer line = new StringBuffer();
         sq.vr().promptValue(data, bigEndian, null, cbuf, maxValLen, line);
-        RowModel row = new RowModel();
-        row.setValue(line.toString());
-        row.setDescription(outLine(in));
+        RowModel row = new RowModel(in.tag(),line.toString());
         info.add(row);
 
     }
@@ -132,9 +133,7 @@ public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
         StringBuffer line = new StringBuffer();
         vr.promptValue(val, bigEndian, dcmobj.getSpecificCharacterSet(),
                 cbuf, maxValLen, line);
-        RowModel row = new RowModel();
-        row.setValue(line.toString());
-        row.setDescription(outLine(in));
+        RowModel row = new RowModel(tag,line.toString());
         info.add(row);
 
         if (tag == Tag.SpecificCharacterSet
@@ -167,24 +166,43 @@ public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
         String value;
         int tag;
 
+        public RowModel(int tag, String value){
+            this.tag = tag;
+            this.value = value;
+        }
+
         public String toString() {
-            return description + " " + value;
+            return "desc:" + getDescription() + " val:" + getValue();
         }
 
         public String getDescription() {
-            return description;
-        }
+            description = Integer.toHexString(tag);
 
-        public void setDescription(String description) {
-            this.description = description;
+            switch(tag){
+                case Tag.PatientAge:
+                    break;
+                default:
+                    HashMap<Integer,String> map = new HashMap<Integer,String>();
+                    Class tagClass = Tag.class;
+                    Field[] field = tagClass.getFields();
+                    for (Field f: field){
+                        int tag_val = 0;
+                        try {
+                            tag_val = f.getInt(tagClass);
+                        } catch (IllegalAccessException e) {
+                            tag_val = -1;
+                        }
+                        String tag_name = f.getName();
+                        map.put(new Integer(tag_val),tag_name);
+                    }
+                    description = map.get(new Integer(tag));
+            }
+
+            return description;
         }
 
         public String getValue() {
             return value;
-        }
-
-        public void setValue(String value) {
-            this.value = value;
         }
 
     }
