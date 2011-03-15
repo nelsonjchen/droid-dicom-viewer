@@ -45,10 +45,12 @@ import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -199,7 +201,10 @@ public class DICOMFileChooser extends ListActivity {
 				mTopDirectory = Environment.getExternalStorageDirectory();
 				
 				// Display the disclaimer
-				displayDisclaimer();
+                SharedPreferences spref = PreferenceManager.getDefaultSharedPreferences(this);
+                if(spref.getBoolean("hide_disclaimer",false) != true) {
+                    displayDisclaimer();
+                }
 			}
 			
 		}
