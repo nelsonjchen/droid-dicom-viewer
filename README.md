@@ -31,6 +31,9 @@ We've added:
 
 * The ability to rotate an Image in the Viewer Activity.
 
+* There is now a Preference screen for hiding the disclaimer on first
+  startup.
+
 * A Git repository that does not have R.java and other riffraff files
   under version control thanks to .gitignore. It's also now on GitHub under
   crazysim/droid-dicom-viewer . Our branch with our enhancements are on the
