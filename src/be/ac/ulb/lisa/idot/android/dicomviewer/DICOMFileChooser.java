@@ -91,6 +91,11 @@ public class DICOMFileChooser extends ListActivity {
 	 * Menu for the displaying of the about dialog.
 	 */
 	private static final short MENU_ABOUT = 1;
+
+    /**
+     * Menu for Preferences Activity
+     */
+    private static final short MENU_PREFERENCES = 2;
 	
 	/**
 	 * Define the progress dialog id for the caching of
@@ -386,6 +391,7 @@ public class DICOMFileChooser extends ListActivity {
 		super.onCreateOptionsMenu(menu);
 		
 		menu.add(0, MENU_CACHE_IMAGE, 0, "Cache all images");
+        menu.add(0, MENU_PREFERENCES,0, "Preferences");
 		menu.add(0, MENU_ABOUT, 1, "About");
 		
 		return true;
@@ -409,7 +415,8 @@ public class DICOMFileChooser extends ListActivity {
         	dialog.setTitle("Droid Dicom Viewer: About");
         	dialog.show();
 			return true;
-		
+        case MENU_PREFERENCES:
+            return true;
 		default:
 			return super.onMenuItemSelected(featureId, item);
 			
