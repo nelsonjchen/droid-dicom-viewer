@@ -61,7 +61,7 @@ public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
                     try {
                         fileName = (new URI(intent.getDataString())).getPath();
                     } catch (URISyntaxException e) {
-
+                        fileName = null;
                     } catch (NullPointerException e) {
                         fileName = null;
                     }
