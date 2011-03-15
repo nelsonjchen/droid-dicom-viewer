@@ -416,6 +416,7 @@ public class DICOMFileChooser extends ListActivity {
         	dialog.show();
 			return true;
         case MENU_PREFERENCES:
+            startActivity(new Intent(this,DICOMFileChooserPreferences.class));
             return true;
 		default:
 			return super.onMenuItemSelected(featureId, item);

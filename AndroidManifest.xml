@@ -63,6 +63,7 @@
     <activity android:name=".DICOMFileInfo"
               android:label="@string/dicom_info_name">
     </activity>
+        <activity android:name=".DICOMFileChooserPreferences"/>
     </application>
     <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="7" />
 
