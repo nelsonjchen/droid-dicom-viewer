@@ -16,6 +16,7 @@ import org.dcm4che2.data.*;
 import org.dcm4che2.io.DicomInputHandler;
 import org.dcm4che2.io.DicomInputStream;
 import org.dcm4che2.util.TagUtils;
+import org.xml.sax.SAXException;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -32,6 +33,9 @@ public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
         super.onCreate(savedInstanceState);
 
         String file_loc = "/sdcard/dropbox/school/adiview_stuff/working_images/CT-MONO2-8-abdo.dcm";
+        String dict_loc = "/sdcard/dropbox/school/adiview_stuff/dictionary.xml";
+
+
         try {
             File file = new File(file_loc);
 
@@ -41,7 +45,16 @@ public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
             BasicDicomObject bdo = new BasicDicomObject();
             ElementDictionary dict = ElementDictionary.getDictionary();
             AssetManager asm = getAssets();
-            ElementDictionary.reloadDictionaries();
+
+            File dict_file = new File(dict_loc);
+
+            ElementDictionary dicti = ElementDictionary.getDictionary();
+
+            try {
+                dicti.loadXML(dict_file);
+            } catch (SAXException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
 
             info = new ArrayList<RowModel>();
 
@@ -59,6 +72,10 @@ public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 //        finish();
+
+    }
+
+    private void extractXMLtoSDCard(){
 
     }
 
