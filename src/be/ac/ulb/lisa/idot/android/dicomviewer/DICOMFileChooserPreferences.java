@@ -7,5 +7,6 @@ import android.preference.PreferenceActivity;
 public class DICOMFileChooserPreferences extends PreferenceActivity{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        addPreferencesFromResource(R.xml.file_chooser_preferences);
     }
 }
