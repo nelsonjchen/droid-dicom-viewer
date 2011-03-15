@@ -273,8 +273,8 @@ public class DICOMViewer extends Activity implements SeekBar.OnSeekBarChangeList
 	 * DICOM Viewer data.
 	 */
 	private DICOMViewerData mDICOMViewerData = null;
-	
-	
+
+
 	// ---------------------------------------------------------------
 	// # <override> FUNCTIONS
 	// ---------------------------------------------------------------
@@ -819,6 +819,15 @@ public class DICOMViewer extends Activity implements SeekBar.OnSeekBarChangeList
             	mDICOMViewerData.setScaleMode(ScaleMode.REALSIZE);
             	mImageView.resetSize();
             	return true;
+
+            case R.id.ddv_ShowImageMetaData:
+                Intent i = new Intent(this,DICOMFileInfo.class);
+                i.putExtra("FromViewer",true);
+                File file = mFileArray[mCurrentFileIndex];
+                i.putExtra("DICOMFileName", file.getAbsolutePath());
+                startActivity(i);
+
+                return true;
             	
             // CACHE ALL IMAGES
             case R.id.ddv_CacheAllImage:

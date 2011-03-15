@@ -113,6 +113,9 @@
     	</menu>
     	
     </item>
+
+    <item android:id="@+id/ddv_ShowImageMetaData"
+          android:title="View Metadata"/>
     
     <item android:id="@+id/ddv_RotateImage"
     	android:title="Rotate"/>
