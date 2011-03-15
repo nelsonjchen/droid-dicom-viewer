@@ -25,7 +25,7 @@ We've added:
 
 * Intents from OI File Manager, DropBox, and similar apps are handled.
 
-* A nice File Metadata Viewing Activity from the Chooser.
+* A nice File Metadata Viewing Activity from the Chooser and the Viewer.
 
 * The chooser now sorts without capitalization.
 
