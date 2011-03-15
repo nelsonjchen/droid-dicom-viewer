@@ -290,7 +290,7 @@ public class DICOMFileChooser extends ListActivity {
 				} else {
 					
 					// Open the DICOM Viewer
-					Intent intent = new Intent(this, DICOMViewer.class);
+					Intent intent = new Intent(this, DICOMFileInfo.class);
 					intent.putExtra("DICOMFileName", mTopDirectory.getPath() + "/" + itemName);
 					intent.putExtra("FileCount", mTotal);
 					startActivity(intent);

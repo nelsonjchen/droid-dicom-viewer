@@ -79,6 +79,7 @@ public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
         } else {
 
             try {
+                currentFileName = fileName;
                 File file = new File(fileName);
 
                 DicomInputStream dis = new DicomInputStream(file);
@@ -110,6 +111,14 @@ public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
 
 //        finish();
 
+    }
+
+    public void callViewer(View v){
+        // Open the DICOM Viewer
+        Intent intent = new Intent(this, DICOMViewer.class);
+        intent.putExtra("DICOMFileName", currentFileName);
+        intent.putExtra("FileCount", 1);
+        startActivity(intent);
     }
 
     private void extractXMLtoSDCard(){
