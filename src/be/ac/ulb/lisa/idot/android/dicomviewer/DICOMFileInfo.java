@@ -1,11 +1,8 @@
 package be.ac.ulb.lisa.idot.android.dicomviewer;
 
-import android.*;
-import android.R;
-import android.app.Activity;
+
 import android.app.ListActivity;
 import android.content.res.AssetManager;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,18 +10,16 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import be.ac.ulb.lisa.idot.android.dicomviewer.data.DCM4CheTagNameHack;
-import be.ac.ulb.lisa.idot.dicom.DICOMTag;
-import com.sun.xml.internal.ws.model.FieldSignature;
 import org.dcm4che2.data.*;
 import org.dcm4che2.io.DicomInputHandler;
 import org.dcm4che2.io.DicomInputStream;
 import org.dcm4che2.util.TagUtils;
-import org.xml.sax.SAXException;
 
-import java.io.*;
-import java.lang.reflect.Field;
+import java.io.EOFException;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 
 public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
@@ -35,6 +30,9 @@ public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.dicom_info_viewer);
+
+
 
         String file_loc = "/sdcard/dropbox/school/adiview_stuff/working_images/CT-MONO2-8-abdo.dcm";
 
@@ -64,6 +62,8 @@ public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
+
+        setListAdapter(new DICOMMetaAdapter());
 //        finish();
 
     }
