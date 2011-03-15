@@ -29,7 +29,7 @@ import java.util.ArrayList;
 public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
     ArrayList<RowModel> info;
     char[] cbuf = new char[64];
-    int maxValLen = 20;
+    int maxValLen = 64;
     String currentFileName = null;
     private static final String FILE_NAME = "file_name";
 
