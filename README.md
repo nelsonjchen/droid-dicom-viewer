@@ -32,4 +32,9 @@ We've added:
 * The ability to rotate an Image in the Viewer Activity.
 
 * A Git repository that does not have R.java and other riffraff files
-  under version control thanks to .gitignore . It's also now on GitHub!
+  under version control thanks to .gitignore. It's also now on GitHub under
+  crazysim/droid-dicom-viewer . Our branch with our enhancements are on the
+  *enhance* branch of that repository. Without enhancement, our properly 
+  versioned controlled version of the original repository is on the *git* 
+  branch. Finally, *master* is a commit for commit port of the original 
+  mercurial repository. 
