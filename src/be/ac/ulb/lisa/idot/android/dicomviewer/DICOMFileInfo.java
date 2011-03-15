@@ -193,7 +193,11 @@ public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
         if (tag == Tag.SpecificCharacterSet
                 || tag == Tag.TransferSyntaxUID
                 || TagUtils.isPrivateCreatorDataElement(tag)) {
-            dcmobj.putBytes(tag, vr, val, bigEndian);
+            try {
+                dcmobj.putBytes(tag, vr, val, bigEndian);
+            } catch (UnsupportedOperationException e) {
+
+            }
         }
         if (tag == 0x00020000) {
             in.setEndOfFileMetaInfoPosition(
