@@ -146,7 +146,7 @@ public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
             in.setEndOfFileMetaInfoPosition(
                     in.getStreamPosition() + vr.toInt(val, bigEndian));
         }
-    }
+     }
 
      private void readItems(DicomInputStream in) throws IOException {
         in.readValue(in);
@@ -210,12 +210,13 @@ public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
             if (row == null){
                 LayoutInflater inflater = getLayoutInflater();
 
-                row = inflater.inflate(android.R.layout.simple_list_item_1,parent,false);
+                row = inflater.inflate(R.layout.row_dicom_info,parent,false);
             }
 
-            TextView label = (TextView) row.findViewById(android.R.id.text1);
-
-            label.setText(info.get(position).getDescription());
+            TextView desc_label = (TextView) row.findViewById(R.id.tagdesc);
+            desc_label.setText(info.get(position).getDescription());
+            TextView val_label = (TextView) row.findViewById(R.id.tagval);
+            val_label.setText(info.get(position).getValue());
 
             return(row);
         }
