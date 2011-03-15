@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import be.ac.ulb.lisa.idot.android.dicomviewer.data.DCM4CheTagNameHack;
 import be.ac.ulb.lisa.idot.dicom.DICOMTag;
 import com.sun.xml.internal.ws.model.FieldSignature;
 import org.dcm4che2.data.*;
@@ -182,21 +183,12 @@ public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
                 case Tag.PatientAge:
                     break;
                 default:
-                    HashMap<Integer,String> map = new HashMap<Integer,String>();
-                    Class tagClass = Tag.class;
-                    Field[] field = tagClass.getFields();
-                    for (Field f: field){
-                        int tag_val = 0;
-                        try {
-                            tag_val = f.getInt(tagClass);
-                        } catch (IllegalAccessException e) {
-                            tag_val = -1;
-                        }
-                        String tag_name = f.getName();
-                        map.put(new Integer(tag_val),tag_name);
-                    }
-                    description = map.get(new Integer(tag));
+                    description = DCM4CheTagNameHack.getTagName(tag);
             }
+
+            if (description == null){
+                description = "N/A";
+            };
 
             return description;
         }
