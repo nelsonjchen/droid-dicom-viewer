@@ -1,6 +1,7 @@
 package be.ac.ulb.lisa.idot.android.dicomviewer;
 
 
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -107,13 +108,18 @@ public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
                 dis.close();
 
                 setListAdapter(new DICOMMetaAdapter());
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            } catch (EOFException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            } catch (IOException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (Exception e){
+                new AlertDialog.Builder(this)
+                    .setTitle("Error")
+                    .setMessage("Unable to load metadata: " + e)
+                    .setNeutralButton("Return", new DialogInterface.OnClickListener(){
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            finish();
+                        }
+                    });
             }
+
         }
 
         if (from_viewer){
