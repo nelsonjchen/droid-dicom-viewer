@@ -121,9 +121,6 @@ public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
         startActivity(intent);
     }
 
-    private void extractXMLtoSDCard(){
-
-    }
 
     @Override
     public boolean readValue(DicomInputStream in) throws IOException {
