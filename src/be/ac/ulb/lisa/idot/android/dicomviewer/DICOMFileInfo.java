@@ -2,6 +2,7 @@ package be.ac.ulb.lisa.idot.android.dicomviewer;
 
 
 import android.app.ListActivity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import be.ac.ulb.lisa.idot.android.dicomviewer.data.DCM4CheTagNameHack;
@@ -32,6 +34,7 @@ public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
     int maxValLen = 64;
     String currentFileName = null;
     private static final String FILE_NAME = "file_name";
+    private boolean from_viewer;
 
 
     public void onCreate(Bundle savedInstanceState) {
@@ -65,6 +68,12 @@ public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
                     } catch (NullPointerException e) {
                         fileName = null;
                     }
+                }
+
+                if (intent.hasExtra("FromViewer")){
+                    from_viewer = true;
+                } else {
+                    from_viewer = false;
                 }
             }
 
@@ -105,7 +114,17 @@ public class DICOMFileInfo extends ListActivity implements DicomInputHandler {
             } catch (IOException e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
+        }
 
+        if (from_viewer){
+            Button view_button = (Button) findViewById(R.id.view);
+            view_button.setText("Return to Viewer");
+            view_button.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View view) {
+                    finish();
+                }
+            });
 
         }
 
