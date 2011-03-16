@@ -41,3 +41,7 @@ We've added:
   versioned controlled version of the original repository is on the *git* 
   branch. Finally, *master* is a commit for commit port of the original 
   mercurial repository. 
+
+## Building
+
+Add the Jar files to your classpath. Run in your IDE.
